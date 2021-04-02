@@ -1,0 +1,3 @@
+/home/hugo/code/DD2323-lab-1/CgLab1/CMakeFiles/rebuild_cache.dir
+/home/hugo/code/DD2323-lab-1/CgLab1/CMakeFiles/edit_cache.dir
+/home/hugo/code/DD2323-lab-1/CgLab1/CMakeFiles/FirstLab.dir
