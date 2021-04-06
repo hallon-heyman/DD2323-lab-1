@@ -31,6 +31,7 @@ void Draw();
 void Interpolate(float, float, vector<float>&);
 void Interpolate(vec3, vec3, vector<vec3>&);
 
+
 // --------------------------------------------------------
 // FUNCTION DEFINITIONS
 
@@ -42,6 +43,7 @@ int main( int argc, char* argv[] )
 		Draw();
 	}
 	SDL_SaveBMP( screen, "screenshot.bmp" );
+
 
 /**
 	vector<float> result(10); // Create a vector width 10 floats
@@ -59,11 +61,12 @@ int main( int argc, char* argv[] )
 		cout << "( "<< result[i].x << ", "<< result[i].y << ", "<< result[i].z << " ) ";
 		}
 		**/
+
 	return 0;
 }
 
-void Draw()
-{	vec3 topLeft(1,0,0); // red 
+void Draw(){	
+	vec3 topLeft(1,0,0); // red 
 	vec3 topRight(0,0,1); // blue
 	vec3 bottomLeft(0,1,0); // green
 	vec3 bottomRight(1,1,0); // yellow
@@ -82,6 +85,7 @@ void Draw()
 		{	
 			//vec3 color(1,0,1);
 			PutPixelSDL(screen, x, y, colors[x]);
+
 		}
 	}
 
@@ -92,7 +96,6 @@ void Draw()
 }
 
 void Interpolate( float a, float b, vector<float>& result){
-
 	float c, increment; 
 	c = (b - a);
 	if (result.size() <= 1){
@@ -123,7 +126,6 @@ void Interpolate( vec3 a, vec3 b, vector<vec3>& result){
 	incx = (c.x) / (result.size()-1);
 	incy = (c.y) / (result.size()-1);
 	incz = (c.z) / (result.size()-1);
-	cout << "WHO IS GAY: " << incx << " FIONN ";
 	for(int i = 0; i < result.size(); i++){
 		result[i].x = a.x+incx*i;
 		result[i].y = a.y+incy*i;
