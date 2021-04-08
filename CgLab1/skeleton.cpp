@@ -16,18 +16,26 @@
 
 using namespace std;
 using glm::vec3;
+using glm::vec2;
 
 // --------------------------------------------------------
 // GLOBAL VARIABLES
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
+int t;
+float f = SCREEN_HEIGHT /2;
+vector<vec3> stars(1000);
+vector<vec2> projected_stars(1000);
 SDL_Surface* screen;
 
 // --------------------------------------------------------
 // FUNCTION DECLARATIONS
 
 void Draw();
+void Draw2();
+void Update();
+void drawStars();
 void Interpolate(float, float, vector<float>&);
 void Interpolate(vec3, vec3, vector<vec3>&);
 
@@ -38,11 +46,14 @@ void Interpolate(vec3, vec3, vector<vec3>&);
 int main( int argc, char* argv[] )
 {
 	screen = InitializeSDL( SCREEN_WIDTH, SCREEN_HEIGHT );
+	drawStars();
+	t = SDL_GetTicks();
 	while( NoQuitMessageSDL() )
-	{
-		Draw();
+	{	
+		Update();
+		Draw2();
 	}
-	SDL_SaveBMP( screen, "screenshot.bmp" );
+	SDL_SaveBMP(screen, "screenshot.bmp" );
 
 
 /**
@@ -63,6 +74,60 @@ int main( int argc, char* argv[] )
 		**/
 
 	return 0;
+}
+
+void drawStars(){
+
+	for(int i= 0; i< stars.size() ; i++)
+	{
+		//calculate star positions
+		stars[i].x = 2*(float(rand()) / (float)RAND_MAX - 0.5);
+		stars[i].y = 2*(float(rand()) / (float)RAND_MAX - 0.5);
+		stars[i].z = 2*(float(rand()) / (float)RAND_MAX - 0.5);
+
+		//calculate projected stars
+		projected_stars[i].x = f*(stars[i].x/stars[i].z) + SCREEN_WIDTH/2;
+		projected_stars[i].y = f*(stars[i].y/stars[i].z) + SCREEN_HEIGHT/2;
+	}
+}
+
+void Draw2(){
+	SDL_FillRect( screen, 0, 0 );
+	if( SDL_MUSTLOCK(screen) ){
+		SDL_LockSurface(screen);
+	}
+	vec3 color_white(1,1,1);
+	for( int y=0; y < projected_stars.size(); ++y )
+	{	
+	PutPixelSDL(screen, projected_stars[y].x, projected_stars[y].y, color_white);
+	}
+
+	if( SDL_MUSTLOCK(screen) ){
+		SDL_UnlockSurface(screen);
+	}
+	SDL_UpdateRect( screen, 0, 0, 0, 0 );
+}
+void Update(){
+	int t2 = SDL_GetTicks();
+	float dt = float(t2-t);
+	t = t2;
+	for( int s=0; s<stars.size(); ++s ){
+		// Add code for update of stars
+		stars[s].z = stars[s].z - 0.001*dt;
+
+		if( stars[s].z <= 0 )
+		{ 
+			stars[s].z += 1;
+		}
+		if( stars[s].z > 1 )
+		{
+			stars[s].z -= 1;
+		}
+		projected_stars[s].x = f*(stars[s].x/stars[s].z) + SCREEN_WIDTH/2;
+		projected_stars[s].y = f*(stars[s].y/stars[s].z) + SCREEN_HEIGHT/2;
+
+	}
+
 }
 
 void Draw(){	
@@ -102,9 +167,9 @@ void Interpolate( float a, float b, vector<float>& result){
 		result[0] = c/2;
 		return;
 		}
-	cout << "resultsize: " << result.size() << " " << c;
+	// cout << "resultsize: " << result.size() << " " << c;
 	increment = (c+1)/(result.size());
-	cout << "increment: " << increment << " ";
+	// cout << "increment: " << increment << " ";
 	for(int i = 0; i < result.size(); i++){
 		result[i] = a+(increment*i);
 	}
